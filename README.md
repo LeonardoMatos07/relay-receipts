@@ -53,7 +53,7 @@ fields @timestamp, function, msg, type, outcome, reason
 
 ```bash
 uv sync
-uv run pytest        # 70 tests, includes real captured SES events (tests/fixtures)
+uv run pytest        # 74 tests, includes real captured SES events (tests/fixtures)
 uv run ruff check . && uv run mypy
 ```
 
