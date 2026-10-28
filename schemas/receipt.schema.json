@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LeonardoMatos07/relay-receipts/schemas/receipt.schema.json",
+  "title": "Relay delivery receipt",
+  "description": "What a provider later says about a message Relay handed to it, in one shape for every provider. Body of POST /v1/receipts.",
+  "type": "object",
+  "required": ["schema", "id", "provider", "channel", "recipient", "type", "occurredAt"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": 1 },
+    "id": { "type": "string", "minLength": 1, "maxLength": 512, "description": "Stable id of the provider event; the same event delivered twice has the same id." },
+    "provider": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "providerMessageId": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "relayMessageId": { "type": "string", "format": "uuid" },
+    "channel": { "enum": ["email", "sms", "whatsapp", "push"] },
+    "recipient": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "type": { "enum": ["sent", "delivered", "delayed", "bounced", "complained", "rejected"] },
+    "permanent": { "type": "boolean", "description": "For bounced: true for a hard bounce, which suppresses the recipient." },
+    "reason": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "occurredAt": { "type": "string", "format": "date-time" }
+  },
+  "anyOf": [{ "required": ["relayMessageId"] }, { "required": ["providerMessageId"] }]
+}

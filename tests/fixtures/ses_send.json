@@ -1,0 +1,62 @@
+{
+  "eventType": "Send",
+  "mail": {
+    "timestamp": "2026-10-27T22:17:19.171Z",
+    "source": "Relay <no-reply@example.org>",
+    "sourceArn": "arn:aws:ses:sa-east-1:123456789012:identity/no-reply@example.org",
+    "sendingAccountId": "123456789012",
+    "messageId": "010301a17f707643-107b6cae-b885-4dd4-bd31-30ac1cd6de40-000000",
+    "destination": [
+      "ana@example.org"
+    ],
+    "headersTruncated": false,
+    "headers": [
+      {
+        "name": "From",
+        "value": "Relay <no-reply@example.org>"
+      },
+      {
+        "name": "To",
+        "value": "ana@example.org"
+      },
+      {
+        "name": "Subject",
+        "value": "Teste do Relay"
+      }
+    ],
+    "commonHeaders": {
+      "from": [
+        "Relay <no-reply@example.org>"
+      ],
+      "to": [
+        "ana@example.org"
+      ],
+      "messageId": "010301a17f707643-107b6cae-b885-4dd4-bd31-30ac1cd6de40-000000",
+      "subject": "Teste do Relay"
+    },
+    "tags": {
+      "ses:source-tls-version": [
+        "TLSv1.3"
+      ],
+      "ses:operation": [
+        "SendEmail"
+      ],
+      "ses:configuration-set": [
+        "relay"
+      ],
+      "ses:source-ip": [
+        "177.223.174.252"
+      ],
+      "ses:from-domain": [
+        "gmail.com"
+      ],
+      "relay_message_id": [
+        "01a17f70-7508-7689-84dc-91b16b315263"
+      ],
+      "ses:caller-identity": [
+        "relay-ses-sender"
+      ]
+    }
+  },
+  "send": {}
+}

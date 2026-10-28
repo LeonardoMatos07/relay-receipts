@@ -1,0 +1,77 @@
+{
+  "eventType": "Bounce",
+  "bounce": {
+    "feedbackId": "010301a182d3327e-a2b267fa-2e13-4798-9aac-a72b2354d068-000000",
+    "bounceType": "Permanent",
+    "bounceSubType": "General",
+    "bouncedRecipients": [
+      {
+        "emailAddress": "bounce@simulator.amazonses.com",
+        "action": "failed",
+        "status": "5.1.1",
+        "diagnosticCode": "smtp; 550 5.1.1 As requested: user unknown <bounce@simulator.amazonses.com>"
+      }
+    ],
+    "timestamp": "2026-10-28T14:04:01.488Z",
+    "remoteMtaIp": "34.238.21.51",
+    "reportingMTA": "dns; d215-10.smtp-out.sa-east-1.amazonses.com"
+  },
+  "mail": {
+    "timestamp": "2026-10-28T14:04:00.173Z",
+    "source": "Relay <no-reply@example.org>",
+    "sourceArn": "arn:aws:ses:sa-east-1:123456789012:identity/no-reply@example.org",
+    "sendingAccountId": "123456789012",
+    "messageId": "010301a182d32d2d-890f34cb-d9b6-467e-985d-86d51a0b36fe-000000",
+    "destination": [
+      "bounce@simulator.amazonses.com"
+    ],
+    "headersTruncated": false,
+    "headers": [
+      {
+        "name": "From",
+        "value": "Relay <no-reply@example.org>"
+      },
+      {
+        "name": "To",
+        "value": "bounce@simulator.amazonses.com"
+      },
+      {
+        "name": "Subject",
+        "value": "simulador bounce"
+      }
+    ],
+    "commonHeaders": {
+      "from": [
+        "Relay <no-reply@example.org>"
+      ],
+      "to": [
+        "bounce@simulator.amazonses.com"
+      ],
+      "messageId": "010301a182d32d2d-890f34cb-d9b6-467e-985d-86d51a0b36fe-000000",
+      "subject": "simulador bounce"
+    },
+    "tags": {
+      "ses:source-tls-version": [
+        "TLSv1.3"
+      ],
+      "ses:operation": [
+        "SendEmail"
+      ],
+      "ses:configuration-set": [
+        "relay"
+      ],
+      "ses:source-ip": [
+        "177.223.174.202"
+      ],
+      "ses:from-domain": [
+        "gmail.com"
+      ],
+      "relay_message_id": [
+        "8f61d99d-322d-4763-8cc8-5dd10f36ea6e"
+      ],
+      "ses:caller-identity": [
+        "terraform-relay"
+      ]
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "eventType": "Complaint",
+  "complaint": {
+    "feedbackId": "010301a182d3408f-5cad7ef6-37a0-4655-b149-89ad6ec5aafa-000000",
+    "complaintSubType": null,
+    "complainedRecipients": [
+      {
+        "emailAddress": "complaint@simulator.amazonses.com"
+      }
+    ],
+    "timestamp": "2026-10-28T14:04:05.062Z",
+    "userAgent": "Amazon SES Mailbox Simulator",
+    "complaintFeedbackType": "abuse",
+    "arrivalDate": "2026-10-28T14:04:05.062Z"
+  },
+  "mail": {
+    "timestamp": "2026-10-28T14:04:02.081Z",
+    "source": "Relay <no-reply@example.org>",
+    "sourceArn": "arn:aws:ses:sa-east-1:123456789012:identity/no-reply@example.org",
+    "sendingAccountId": "123456789012",
+    "messageId": "010301a182d334a1-cc0d2623-a6a2-43a7-933e-adf0746a795d-000000",
+    "destination": [
+      "complaint@simulator.amazonses.com"
+    ],
+    "headersTruncated": false,
+    "headers": [
+      {
+        "name": "From",
+        "value": "Relay <no-reply@example.org>"
+      },
+      {
+        "name": "To",
+        "value": "complaint@simulator.amazonses.com"
+      },
+      {
+        "name": "Subject",
+        "value": "simulador complaint"
+      }
+    ],
+    "commonHeaders": {
+      "from": [
+        "Relay <no-reply@example.org>"
+      ],
+      "to": [
+        "complaint@simulator.amazonses.com"
+      ],
+      "messageId": "010301a182d334a1-cc0d2623-a6a2-43a7-933e-adf0746a795d-000000",
+      "subject": "simulador complaint"
+    },
+    "tags": {
+      "ses:source-tls-version": [
+        "TLSv1.3"
+      ],
+      "ses:operation": [
+        "SendEmail"
+      ],
+      "ses:configuration-set": [
+        "relay"
+      ],
+      "ses:source-ip": [
+        "177.223.174.202"
+      ],
+      "ses:from-domain": [
+        "gmail.com"
+      ],
+      "relay_message_id": [
+        "660378c5-ce1b-4e57-b272-433a6f91cee1"
+      ],
+      "ses:caller-identity": [
+        "terraform-relay"
+      ]
+    }
+  }
+}
