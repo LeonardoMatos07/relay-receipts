@@ -22,7 +22,8 @@ def process(event: dict[str, Any], sink: ReceiptSink) -> dict[str, Any]:
     for record in event.get("Records", []):
         message_id = str(record.get("messageId", ""))
         try:
-            receipts = ses.normalize(ses.unwrap(record["body"]))
+            body = ses.unwrap(record["body"])
+            receipts = ses.normalize(body)
         except (ses.InvalidSesEventError, KeyError) as error:
             # Not retried in place: after the queue's maxReceiveCount it lands in the DLQ.
             logs.error("unreadable SES event", sqs_message=message_id, error=str(error))
@@ -30,14 +31,22 @@ def process(event: dict[str, Any], sink: ReceiptSink) -> dict[str, Any]:
             continue
         if not receipts:
             ignored += 1
+            logs.info(
+                "ses event ignored",
+                sqs_message=message_id,
+                event_type=body.get("eventType") or body.get("notificationType"),
+            )
             continue
         pending.extend((message_id, receipt) for receipt in receipts)
 
     failed_positions = sink.send([receipt for _, receipt in pending]) if pending else set()
-    for position in failed_positions:
-        message_id = pending[position][0]
-        if message_id not in failures:
-            failures.append(message_id)
+    for position, (message_id, receipt) in enumerate(pending):
+        if position in failed_positions:
+            logs.error("receipt not queued", sqs_message=message_id, **logs.receipt_fields(receipt))
+            if message_id not in failures:
+                failures.append(message_id)
+        else:
+            logs.info("receipt queued", sqs_message=message_id, **logs.receipt_fields(receipt))
 
     logs.info(
         "ses events processed",
@@ -49,7 +58,8 @@ def process(event: dict[str, Any], sink: ReceiptSink) -> dict[str, Any]:
     return {"batchItemFailures": [{"itemIdentifier": item} for item in failures]}
 
 
-def handler(event: dict[str, Any], context: object) -> dict[str, Any]:
+def handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
     from relay_receipts.aws import SqsReceiptSink
 
+    logs.bind(function="webhook-ses", request_id=getattr(context, "aws_request_id", None))
     return process(event, SqsReceiptSink.from_environment())

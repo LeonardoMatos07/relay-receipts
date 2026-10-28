@@ -33,13 +33,17 @@ def process(event: dict[str, Any], ledger: Ledger, relay: RelayGateway) -> dict[
             failures.append(message_id)
             continue
 
+        fields = logs.receipt_fields(receipt)
         if ledger.begin(receipt) == "done":
             counts["skipped"] += 1
+            logs.info("receipt already handled", sqs_message=message_id, **fields)
             continue
         try:
             outcome = relay.deliver(receipt)
         except RelayUnavailableError as error:
-            logs.warning("relay unavailable, will retry", receipt=receipt.id, error=str(error))
+            logs.warning(
+                "relay unavailable, will retry", sqs_message=message_id, error=str(error), **fields
+            )
             failures.append(message_id)
             continue
 
@@ -47,11 +51,11 @@ def process(event: dict[str, Any], ledger: Ledger, relay: RelayGateway) -> dict[
         counts[outcome] += 1
         if outcome in ("unmatched", "rejected"):
             logs.warning(
-                "receipt not usable by relay",
-                receipt=receipt.id,
-                outcome=outcome,
-                provider=receipt.provider,
-                type=receipt.type,
+                "receipt not usable by relay", sqs_message=message_id, outcome=outcome, **fields
+            )
+        else:
+            logs.info(
+                "receipt delivered to relay", sqs_message=message_id, outcome=outcome, **fields
             )
 
     logs.info(
@@ -60,8 +64,9 @@ def process(event: dict[str, Any], ledger: Ledger, relay: RelayGateway) -> dict[
     return {"batchItemFailures": [{"itemIdentifier": item} for item in failures]}
 
 
-def handler(event: dict[str, Any], context: object) -> dict[str, Any]:
+def handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
     from relay_receipts.aws import DynamoLedger
     from relay_receipts.relay import HttpRelay
 
+    logs.bind(function="relay-receipts", request_id=getattr(context, "aws_request_id", None))
     return process(event, DynamoLedger.from_environment(), HttpRelay.from_environment())

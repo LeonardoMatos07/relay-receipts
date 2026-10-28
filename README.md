@@ -23,6 +23,32 @@ A new provider (Twilio, SendGrid, ...) only needs its own small translator that 
 - Relay answers 404 (unknown message) or 400/422 (invalid): the receipt is dropped and logged, retrying would not help. Anything else (5xx, 429, network) is retried.
 - Delivery to Relay is at-least-once; the ledger and Relay's unique receipt id make it effectively once.
 
+## Logs
+
+Both functions write one JSON line per fact to CloudWatch Logs (`/aws/lambda/relay-webhook-ses`
+and `/aws/lambda/relay-receipts`, retention set in relay-terraform). Every line has `level`,
+`msg`, `function` and the invocation's `request_id`; each receipt gets its own line with
+`receipt_id`, `provider`, `provider_message_id`, `relay_message_id`, `channel`, `type`,
+`permanent`, `reason`, `occurred_at` and a masked `recipient` (`a***@example.org`).
+
+| `msg`                                                  | When                                                       |
+| ------------------------------------------------------ | ---------------------------------------------------------- |
+| `receipt queued` / `receipt not queued`                | webhook-ses queued (or failed to queue) a receipt          |
+| `ses event ignored`                                    | an SES event type Relay does not track (`event_type`)      |
+| `receipt delivered to relay` (`outcome`)               | Relay answered: `recorded` or `duplicate`                  |
+| `receipt not usable by relay` (`outcome`)              | `unmatched` (unknown message) or `rejected`; kept, not retried |
+| `relay unavailable, will retry`                        | Relay failed or was unreachable; the message goes back     |
+| `receipt already handled`                              | the ledger saw it before (SQS redelivery)                  |
+| `ses events processed` / `receipts processed`          | one summary per batch                                      |
+
+Follow one message through both functions (CloudWatch Logs Insights, both log groups):
+
+```
+fields @timestamp, function, msg, type, outcome, reason
+| filter relay_message_id = "01a182e5-1c44-79c5-a76d-d4dae779dd10"
+| sort @timestamp asc
+```
+
 ## Develop
 
 ```bash
